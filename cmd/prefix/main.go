@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
-	"strings"
 
 	"github.com/alecthomas/kong"
+	"github.com/anmitsu/go-shlex"
 	"github.com/awryme/prefix/app/prefix"
 	"github.com/awryme/prefix/pkg/cmdscanner"
 )
@@ -18,7 +18,7 @@ const QuitCmd = ":q"
 const desc = `prefix command.`
 
 type App struct {
-	Debug bool `short:"d" help:"print full command before executing"`
+	Debug bool `short:"d" help:"print full command to stderr before executing"`
 
 	Binary string   `arg:"" help:"binary to run" passthrough:""`
 	Args   []string `arg:"" help:"initial arguments" optional:""`
@@ -41,18 +41,18 @@ func Run() error {
 			return cmdscanner.Stop
 		}
 
-		// pass empty args by default
-		var args []string
-		if text != "" {
-			args = strings.Split(text, " ")
+		args, err := shlex.Split(text, true)
+		if err != nil {
+			fmt.Println("parse args error:", err)
+			return nil
 		}
 
-		err := executor.Run(ctx, args)
+		err = executor.Run(ctx, args)
 		if err != nil {
 			if errors.Is(err, context.Canceled) {
 				return cmdscanner.Stop
 			}
-			fmt.Println("executing error:", err)
+			fmt.Println("execution error:", err)
 		}
 		return nil
 	})
