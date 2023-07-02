@@ -5,7 +5,7 @@ prefix: execute commands in repl
 ```
 Usage: prefix <binary> [<args> ...]
 
-prefix command.
+prefix: execute commands in repl. Use ctrl+C or ":q" to quit
 
 Arguments:
   <binary>        binary to run

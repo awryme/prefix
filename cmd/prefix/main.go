@@ -15,7 +15,7 @@ import (
 
 const QuitCmd = ":q"
 
-const desc = `prefix command.`
+const desc = `prefix: execute commands in repl. Use ctrl+C or ":q" to quit`
 
 type App struct {
 	Debug bool `short:"d" help:"print full command to stderr before executing"`
